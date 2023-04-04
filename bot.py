@@ -39,9 +39,12 @@ def main():
         first_word = next(m.group() for m in re.finditer(r'\w+', today.get_text()))
         if (weekday_name[weekday] == first_word):
             for cur_para in today.find_all("tr"):
-                # Этот костыль тут нужен хз зачем, но без него бот падает
+                # Этот костыль пропускает строку таблицы расписания где написан день недели!
                 if cur_para.get_text().strip("\n\t ") in weekday_name:
                     # print (cur_para.get_text()) # Вторник
+                    continue
+                # Этот костыль нужен чтобы перейти сразу к изменённому расписание, с галочкой (временно?)
+                if '✓' not in cur_para.get_text():
                     continue
                 # Парсим номер пары, название, аудиторию и препода
                 cur_para_num = cur_para.find("td", class_="num_para")
