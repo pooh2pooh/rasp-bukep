@@ -16,7 +16,10 @@ load_dotenv(dotenv_path)
 app = Client("BUKEP NOTIFIER", api_id=environ.get('API_ID'), api_hash=environ.get('API_HASH'), bot_token=environ.get('TOKENTG'))
 
 
+# НАСТРОЙКИ
 URL_TEMPLATE = "http://rasp.bukep.ru/Default.aspx?idFil=1000&tr=gweek&f=10084&s=%d0%98%d0%bd%d1%84%d0%be%d1%80%d0%bc%d0%b0%d1%86%d0%b8%d0%be%d0%bd%d0%bd%d1%8b%d0%b5%20%d1%81%d0%b8%d1%81%d1%82%d0%b5%d0%bc%d1%8b%20(%d0%bf%d0%be%20%d0%be%d1%82%d1%80%d0%b0%d1%81%d0%bb%d1%8f%d0%bc)1&k=3&g=6293"
+ME = 'pooh2pooh' # кому отправить уведомление (username)
+SET_TIME = '15' # за сколько минут отправить уведомление
 
 rasp_time_other = ['', '08:30', '10:15', '12:25', '14:35', '16:20', '18:05', '19:50']
 rasp_time_saturday = ['', '08:30', '10:15', '12:00', '14:10', '15:55', '17:40', '19:25']
@@ -59,7 +62,7 @@ def main():
                 if cur_para_num in range(len(rasp_time)):
                     if rasp_time[cur_para_num] > cur_time:
                         time_interval = datetime.strptime(rasp_time[cur_para_num]+':00',"%H:%M:%S") - datetime.strptime(cur_time,"%H:%M:%S")
-                        loop_timer = datetime.strptime(rasp_time[cur_para_num]+':00',"%H:%M:%S") - timedelta(minutes=15)
+                        loop_timer = datetime.strptime(rasp_time[cur_para_num]+':00',"%H:%M:%S") - timedelta(minutes=SET_TIME)
                         next_notify = "Следующая пара \033[1m" + cur_para.get_text() + "\033[0m, начнётся через " + str(time_interval) + " в \033[1m" + rasp_time[cur_para_num] + "\033[0m\n" + "Напоминание будет отправлено в " + loop_timer.strftime("%H:%M:%S")
                         if str(time_interval) >= "1:00:00":
                             threading.Timer(3600.0, main).start()
@@ -67,9 +70,9 @@ def main():
                             threading.Timer(300.0, main).start()
                         # print (str(time_interval)) # 4:04:08
                         # print (str(loop_timer)) # 1900-01-01 14:25:00
-                        if str(time_interval) <= "0:15:00":
+                        if str(time_interval) <= "0:" + SET_TIME + ":00":
                             print("\033[0mНапоминание отправлено!\033[1m")
-                            app.send_message('pooh2pooh', str(cur_para_num) + '. ' + str(cur_para_name).replace("<br>", "\n") + '\n' + prepods + '\n**начнётся через ' + str(time_interval) + '**')
+                            app.send_message(ME, str(cur_para_num) + '. ' + str(cur_para_name).replace("<br>", "\n") + '\n' + prepods + '\n**начнётся через ' + str(time_interval) + '**')
                         break
                     # print(' ' + str(cur_para_num) + ' ' + cur_para_name)
 
@@ -101,16 +104,16 @@ def getRasp():
     threading.Timer(3600.0, getRasp).start()
 
 
-if __name__ == "__main__":
-    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-    print(" Бот парсит расписание БУКЭП и уведомляет о начале следующей пары в телеграм, примерно за 10 минут")
-    print("")
-    print(" Автор: @pooh2pooh")
-    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+print(" Бот парсит расписание БУКЭП и уведомляет о начале следующей пары в телеграм, примерно за 10 минут")
+print("")
+print(" Автор: @pooh2pooh")
+print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
-    app.start()
-    # app.send_message('pooh2pooh', 'Бот запущен!')
-    getRasp()
-    main()
-    # idle()
-    # app.stop()
+getRasp()
+app.start()
+main()
+app.send_message(ME, 'Бот запущен!')
+
+idle()
+app.stop()
