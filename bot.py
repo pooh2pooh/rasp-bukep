@@ -19,7 +19,7 @@ app = Client("BUKEP NOTIFIER", api_id=environ.get('API_ID'), api_hash=environ.ge
 # НАСТРОЙКИ
 URL_TEMPLATE = "http://rasp.bukep.ru/Default.aspx?idFil=1000&tr=gweek&f=10084&s=%d0%98%d0%bd%d1%84%d0%be%d1%80%d0%bc%d0%b0%d1%86%d0%b8%d0%be%d0%bd%d0%bd%d1%8b%d0%b5%20%d1%81%d0%b8%d1%81%d1%82%d0%b5%d0%bc%d1%8b%20(%d0%bf%d0%be%20%d0%be%d1%82%d1%80%d0%b0%d1%81%d0%bb%d1%8f%d0%bc)1&k=3&g=6293"
 ME = 'pooh2pooh' # кому отправить уведомление (username)
-SET_TIME = '15' # за сколько минут отправить уведомление
+SET_TIME = 15 # за сколько минут отправить уведомление
 
 rasp_time_other = ['', '08:30', '10:15', '12:25', '14:35', '16:20', '18:05', '19:50']
 rasp_time_saturday = ['', '08:30', '10:15', '12:00', '14:10', '15:55', '17:40', '19:25']
@@ -70,7 +70,7 @@ def main():
                             threading.Timer(300.0, main).start()
                         # print (str(time_interval)) # 4:04:08
                         # print (str(loop_timer)) # 1900-01-01 14:25:00
-                        if str(time_interval) <= "0:" + SET_TIME + ":00":
+                        if str(time_interval) <= "0:" + str(SET_TIME) + ":00":
                             print("\033[0mНапоминание отправлено!\033[1m")
                             app.send_message(ME, str(cur_para_num) + '. ' + str(cur_para_name).replace("<br>", "\n") + '\n' + prepods + '\n**начнётся через ' + str(time_interval) + '**')
                         break
